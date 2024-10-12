@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulación del DOM</title>
+    
+</head>
+<body>
+    <h1 style="color: blueviolet;">BLOCK DE NOTAS</h1>
+    <p></p>
+    <textarea id="nuevaNota" placeholder="Escribe tu nota aquí"></textarea><br>
+    <p></p>
+    <button id="agregarNota">Agregar Nota</button>
+    <p></p>
+    <input type="text" id="buscar" placeholder="Buscar nota">
+    <p></p>
+    <div id="contenedorNotas"></div>
+
+    <script>
+        let notas = [];
+
+        document.getElementById('agregarNota').addEventListener('click', () => {
+            const texto = document.getElementById('nuevaNota').value.trim();
+            if (texto) {
+                notas.push({ id: Date.now(), contenido: texto });
+                mostrarNotas();
+                document.getElementById('nuevaNota').value = ''; 
+            }
+        });
+
+        document.getElementById('buscar').addEventListener('input', () => {
+            const termino = document.getElementById('buscar').value.toLowerCase();
+            mostrarNotas(termino);
+        });
+
+        function mostrarNotas(busqueda = '') {
+            const contenedorNotas = document.getElementById('contenedorNotas');
+            contenedorNotas.innerHTML = '';
+            notas.filter(nota => nota.contenido.toLowerCase().includes(busqueda))
+                .forEach(nota => {
+                    const div = document.createElement('div');
+                    div.className = 'nota';
+                    div.innerHTML = `
+                        <h3>${nota.contenido}</h3>
+                        <button onclick="eliminarNota(${nota.id})">Eliminar</button>
+                    `;
+                    contenedorNotas.appendChild(div);
+                });
+        }
+
+        function eliminarNota(id) {
+            notas = notas.filter(nota => nota.id !== id);
+            mostrarNotas();
+        }
+    </script>
+</body>
+</html>
